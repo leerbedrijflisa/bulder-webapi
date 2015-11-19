@@ -1,0 +1,30 @@
+{
+  "commands": {
+    "web": "Microsoft.AspNet.Server.Kestrel"
+  },
+  "dependencies": {
+    "Microsoft.AspNet.Cors": "6.0.0-beta8",
+    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-beta8",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta8",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta8",
+    "WindowsAzure.Storage": "5.0.3-preview"
+  },
+  "exclude": [
+    "wwwroot",
+    "node_modules",
+    "bower_components"
+  ],
+  "frameworks": {
+    "dnx451": { },
+    "dnxcore50": { }
+  },
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "version": "1.0.0-*",
+  "webroot": "wwwroot"
+}
