@@ -1,5 +1,4 @@
-﻿using Lisa.Bulder.WebApi.Data;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Lisa.Bulder.WebApi
 {
-    [Route("subscriptions")]
+    [Route("[controller]")]
     public class SubscriptionsController : Controller
     {
         [HttpGet]
@@ -17,6 +17,22 @@ namespace Lisa.Bulder.WebApi
         public IActionResult Get(string id)
         {
             return new ObjectResult("");
+        }
+
+        [HttpPost("{channel}")]
+        public async Task<IActionResult> Post([FromBody] SubscriptionEntity subscription, string channel)
+        {
+            subscription.PartitionKey = channel;
+
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
+            }
+
+            var createdSubscription = await _db.CreateSubscription(subscription);
+            string location = Url.RouteUrl("subscription", new { id = createdSubscription.RowKey }, Request.Scheme);
+
+            return new CreatedResult(location, createdSubscription);
         }
 
         private readonly Database _db = new Database();
