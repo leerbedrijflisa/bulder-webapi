@@ -9,6 +9,17 @@ namespace Lisa.Bulder.WebApi
 {
     public class Database
     {
+        public Database()
+        {
+            var account = CloudStorageAccount.Parse("UseDevelopmentStorage=true");
+            var client = account.CreateCloudTableClient();
+
+            _messages = client.GetTableReference("messages");
+            _channels = client.GetTableReference("channels");
+            _subscriptions = client.GetTableReference("subscriptions");
+            _users = client.GetTableReference("users");
+        }
+
         //Messages
         public async Task<IEnumerable<MessageEntity>> FetchMessages()
         {
@@ -76,8 +87,6 @@ namespace Lisa.Bulder.WebApi
             var result = await _users.ExecuteAsync(operation);
             return (UserEntity)result.Result;
         }
-
-        
 
         private CloudTable _messages;
         private CloudTable _channels;
