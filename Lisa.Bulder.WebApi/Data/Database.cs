@@ -27,11 +27,9 @@ namespace Lisa.Bulder.WebApi
             var segment = await _messages.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<MessageEntity> CreateMessage(MessageEntity message)
         {
-            await _messages.CreateIfNotExistsAsync();
-
             message.PartitionKey = message.PartitionKey;
             message.RowKey = Guid.NewGuid().ToString();
             var operation = TableOperation.Insert(message);
@@ -46,11 +44,9 @@ namespace Lisa.Bulder.WebApi
             var segment = await _channels.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<ChannelEntity> CreateChannel(ChannelEntity channel)
         {
-            await _channels.CreateIfNotExistsAsync();
-
             channel.PartitionKey = channel.PartitionKey;
             channel.RowKey = string.Empty;
             var operation = TableOperation.Insert(channel);
@@ -65,11 +61,9 @@ namespace Lisa.Bulder.WebApi
             var segment = await _subscriptions.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<SubscriptionEntity> CreateSubscription(SubscriptionEntity subscription)
         {
-            await _subscriptions.CreateIfNotExistsAsync();
-
             subscription.PartitionKey = subscription.PartitionKey;
             subscription.RowKey = Guid.NewGuid().ToString();
             var operation = TableOperation.Insert(subscription);
@@ -84,19 +78,15 @@ namespace Lisa.Bulder.WebApi
             var segment = await _users.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<UserEntity> CreateUser(UserEntity user)
         {
-            await _users.CreateIfNotExistsAsync();
-
             user.PartitionKey = user.PartitionKey;
             user.RowKey = Guid.NewGuid().ToString();
             var operation = TableOperation.Insert(user);
             var result = await _users.ExecuteAsync(operation);
             return (UserEntity)result.Result;
         }
-
-        
 
         private CloudTable _messages;
         private CloudTable _channels;
