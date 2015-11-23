@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace Lisa.Bulder.WebApi
 {
-    [Route("messages")]
+    [Route("[controller]")]
     public class MessagesController : Controller
     {
-        //get all messages
+        //Get all messages
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -20,10 +20,17 @@ namespace Lisa.Bulder.WebApi
             return new ObjectResult("");
         }
 
-        //create message
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] MessageEntity message)
+        //Create message
+        [HttpPost("{channel}")]
+        public async Task<IActionResult> Post([FromBody] MessageEntity message, string channel)
         {
+            message.PartitionKey = channel;
+
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
+            }
+
             var createdMessage = await _db.CreateMessage(message);
             string location = Url.RouteUrl("message", new { id = createdMessage.RowKey }, Request.Scheme);
 

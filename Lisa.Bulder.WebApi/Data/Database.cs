@@ -27,7 +27,7 @@ namespace Lisa.Bulder.WebApi
             var segment = await _messages.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<MessageEntity> CreateMessage(MessageEntity message)
         {
             await _messages.CreateIfNotExistsAsync();
@@ -46,7 +46,7 @@ namespace Lisa.Bulder.WebApi
             var segment = await _channels.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<ChannelEntity> CreateChannel(ChannelEntity channel)
         {
             await _channels.CreateIfNotExistsAsync();
@@ -65,7 +65,7 @@ namespace Lisa.Bulder.WebApi
             var segment = await _subscriptions.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<SubscriptionEntity> CreateSubscription(SubscriptionEntity subscription)
         {
             await _subscriptions.CreateIfNotExistsAsync();
@@ -84,7 +84,7 @@ namespace Lisa.Bulder.WebApi
             var segment = await _users.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-
+        
         public async Task<UserEntity> CreateUser(UserEntity user)
         {
             await _users.CreateIfNotExistsAsync();
