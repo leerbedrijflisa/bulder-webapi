@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Cors.Core;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json.Serialization;
 
 namespace Lisa.Bulder.WebApi
@@ -26,6 +27,16 @@ namespace Lisa.Bulder.WebApi
             app.UseIISPlatformHandler();
             app.UseCors("allowAll");
             app.UseMvc();
+
+            _channels.CreateIfNotExistsAsync();
+            _messages.CreateIfNotExistsAsync();
+            _users.CreateIfNotExistsAsync();
+            _subscriptions.CreateIfNotExistsAsync();
         }
+
+        private CloudTable _messages;
+        private CloudTable _channels;
+        private CloudTable _subscriptions;
+        private CloudTable _users;
     }
 }
