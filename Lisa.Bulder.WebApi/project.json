@@ -15,8 +15,7 @@
     "bower_components"
   ],
   "frameworks": {
-    "dnx451": { },
-    "dnxcore50": { }
+    "dnx451": { }
   },
   "publishExclude": [
     "node_modules",

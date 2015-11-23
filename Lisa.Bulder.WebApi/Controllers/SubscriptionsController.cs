@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace Lisa.Bulder.WebApi
@@ -29,12 +30,32 @@ namespace Lisa.Bulder.WebApi
                 return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
             }
 
+            string aFrom = "bulder@bulder.com";
+            string aTo = subscription.EmailAddress;
+            string aSubject = "Channel Subscription";
+            string aBody = string.Format("You just subscribed to {0}", channel);
+
+            //create the mail message
+            MailMessage mail = new MailMessage();
+
+            //set the addresses
+            mail.From = new MailAddress(aFrom);
+            mail.To.Add(aTo);
+
+            //set the content
+            mail.Subject = aSubject;
+            mail.Body = aBody;
+
+            //send the message
+            SmtpClient smtp = new SmtpClient("localhost");
+            smtp.UseDefaultCredentials = true;
+            smtp.Send(mail);
+
             var createdSubscription = await _db.CreateSubscription(subscription);
             string location = Url.RouteUrl("subscription", new { id = createdSubscription.RowKey }, Request.Scheme);
 
             return new CreatedResult(location, createdSubscription);
         }
-
         private readonly Database _db = new Database();
     }
 }
