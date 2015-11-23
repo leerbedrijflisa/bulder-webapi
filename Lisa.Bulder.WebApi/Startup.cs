@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNet.Builder;
+﻿
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Cors.Core;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json.Serialization;
 
@@ -27,6 +29,14 @@ namespace Lisa.Bulder.WebApi
             app.UseIISPlatformHandler();
             app.UseCors("allowAll");
             app.UseMvc();
+
+            var account = CloudStorageAccount.Parse("UseDevelopmentStorage=true");
+            var client = account.CreateCloudTableClient();
+
+            _messages = client.GetTableReference("messages");
+            _channels = client.GetTableReference("channels");
+            _subscriptions = client.GetTableReference("subscriptions");
+            _users = client.GetTableReference("users");
 
             _channels.CreateIfNotExistsAsync();
             _messages.CreateIfNotExistsAsync();
