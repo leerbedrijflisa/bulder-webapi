@@ -6,5 +6,6 @@ namespace Lisa.Bulder.WebApi
     {
         public string Administrators { get; set; }
         public string Authors { get; set; }
+        public string Name { get; set; }
     }
 }
