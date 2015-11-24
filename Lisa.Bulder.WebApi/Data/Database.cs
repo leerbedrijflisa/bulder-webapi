@@ -1,5 +1,4 @@
-﻿using Lisa.Bulder.WebApi.Data;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
@@ -47,7 +46,8 @@ namespace Lisa.Bulder.WebApi
         
         public async Task<ChannelEntity> CreateChannel(ChannelEntity channel)
         {
-            channel.PartitionKey = channel.PartitionKey;
+            channel.Name = channel.PartitionKey;
+            channel.PartitionKey = channel.Name.ToLower();
             channel.RowKey = string.Empty;
             var operation = TableOperation.Insert(channel);
             var result = await _channels.ExecuteAsync(operation);
