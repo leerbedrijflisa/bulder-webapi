@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lisa.Bulder.WebApi
 {
-    public class Database
+    partial class Database
     {
         public Database()
         {
@@ -17,41 +17,34 @@ namespace Lisa.Bulder.WebApi
             _channels = client.GetTableReference("channels");
             _subscriptions = client.GetTableReference("subscriptions");
             _users = client.GetTableReference("users");
+
+            _channels.CreateIfNotExistsAsync();
+            _messages.CreateIfNotExistsAsync();
+            _users.CreateIfNotExistsAsync();
+            _subscriptions.CreateIfNotExistsAsync();
         }
 
         //Messages
-        public async Task<IEnumerable<MessageEntity>> FetchMessages()
+        public async Task<object> FetchMessage(string channel, string id)
         {
-            var query = new TableQuery<MessageEntity>();
+            var operation = TableOperation.Retrieve<MessageEntity>(channel, id);
+            var result = await _messages.ExecuteAsync(operation);
+            return Mapper.ToMessage(result.Result);
+        }
+
+        public async Task<IEnumerable<object>> FetchMessages(string channel)
+        {
+            var query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, channel));
             var segment = await _messages.ExecuteQuerySegmentedAsync(query, null);
             return segment;
         }
-        
-        public async Task<MessageEntity> CreateMessage(MessageEntity message)
-        {
-            message.PartitionKey = message.PartitionKey;
-            message.RowKey = Guid.NewGuid().ToString();
-            var operation = TableOperation.Insert(message);
-            var result = await _messages.ExecuteAsync(operation);
-            return (MessageEntity) result.Result;
-        }
 
-        //Channels
-        public async Task<IEnumerable<ChannelEntity>> FetchChannels()
+        public async Task<object> CreateMessage(string channel, PostedMessage message)
         {
-            var query = new TableQuery<ChannelEntity>();
-            var segment = await _channels.ExecuteQuerySegmentedAsync(query, null);
-            return segment;
-        }
-        
-        public async Task<ChannelEntity> CreateChannel(ChannelEntity channel)
-        {
-            channel.Name = channel.PartitionKey;
-            channel.PartitionKey = channel.Name.ToLower();
-            channel.RowKey = string.Empty;
-            var operation = TableOperation.Insert(channel);
-            var result = await _channels.ExecuteAsync(operation);
-            return (ChannelEntity)result.Result;
+            var entity = Mapper.ToEntity(channel, message);
+            var operation = TableOperation.Insert(entity);
+            var result = await _messages.ExecuteAsync(operation);
+            return Mapper.ToMessage((MessageEntity) result.Result);
         }
 
         //Subscriptions
@@ -68,8 +61,8 @@ namespace Lisa.Bulder.WebApi
             subscription.RowKey = Guid.NewGuid().ToString();
             var operation = TableOperation.Insert(subscription);
             var result = await _subscriptions.ExecuteAsync(operation);
-            return (SubscriptionEntity)result.Result;
-        }
+            return (SubscriptionEntity) result.Result;
+        } 
 
         //Users
         public async Task<IEnumerable<UserEntity>> FetchUsers()
@@ -85,7 +78,7 @@ namespace Lisa.Bulder.WebApi
             user.RowKey = Guid.NewGuid().ToString();
             var operation = TableOperation.Insert(user);
             var result = await _users.ExecuteAsync(operation);
-            return (UserEntity)result.Result;
+            return (UserEntity) result.Result;
         }
 
         private CloudTable _messages;
