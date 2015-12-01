@@ -22,5 +22,7 @@ namespace Lisa.Bulder.WebApi
             var result = await _channels.ExecuteAsync(operation);
             return (ChannelEntity) result.Result;
         }
+
+        private CloudTable _channels;
     }
 }

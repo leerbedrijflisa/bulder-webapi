@@ -31,10 +31,5 @@ namespace Lisa.Bulder.WebApi
             app.UseCors("allowAll");
             app.UseMvc();
         }
-
-        private CloudTable _messages;
-        private CloudTable _channels;
-        private CloudTable _subscriptions;
-        private CloudTable _users;
     }
 }

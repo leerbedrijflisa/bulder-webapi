@@ -40,13 +40,14 @@ namespace Lisa.Bulder.WebApi
 
             var emailTask = _emailService.Send(subscription.EmailAddress, subject, body);
             var databaseTask = _db.CreateSubscription(subscription);
-            Task.WaitAll(emailTask, databaseTask);
+            await Task.WhenAll(emailTask, databaseTask);
             var createdSubscription = databaseTask.Result;
 
             string location = Url.RouteUrl("subscription", new { id = createdSubscription.RowKey }, Request.Scheme);
 
             return new CreatedResult(location, createdSubscription);
         }
+
         private readonly Database _db = new Database();
         private readonly IEmailService _emailService;
     }
