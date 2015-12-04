@@ -6,6 +6,7 @@ namespace Lisa.Bulder.WebApi
     public class SubscriptionEntity : TableEntity
     {
         [Required]
+        [EmailAddress]
         public string EmailAddress { get; set; }
     }
 }

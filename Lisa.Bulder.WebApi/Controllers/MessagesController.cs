@@ -6,33 +6,34 @@ namespace Lisa.Bulder.WebApi
     [Route("[controller]")]
     public class MessagesController : Controller
     {
-        //Get all messages
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        //Get a single message from a channel
+        [HttpGet("{channel}/{id}", Name = "message")]
+        public async Task<IActionResult> Get(string channel, string id)
         {
-            var messages = await _db.FetchMessages();
-            return new ObjectResult(messages);
+            var message = await _db.FetchMessage(channel, id);
+            return new HttpOkObjectResult(message);
         }
 
-        [HttpGet("{id}", Name = "message")]
-        public IActionResult Get(string id)
+        //Get all messages from a channel
+        [HttpGet("{channel}")]
+        public async Task<IActionResult> Get(string channel)
         {
-            return new ObjectResult("");
+            var messages = await _db.FetchMessages(channel);
+            return new HttpOkObjectResult(messages);
         }
 
         //Create message
         [HttpPost("{channel}")]
-        public async Task<IActionResult> Post([FromBody] MessageEntity message, string channel)
+        public async Task<IActionResult> Post([FromBody] PostedMessage message, string channel)
         {
-            message.PartitionKey = channel;
 
             if (!ModelState.IsValid)
             {
                 return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
             }
 
-            var createdMessage = await _db.CreateMessage(message);
-            string location = Url.RouteUrl("message", new { id = createdMessage.RowKey }, Request.Scheme);
+            dynamic createdMessage = await _db.CreateMessage(channel, message);
+            string location = Url.RouteUrl("message", new { id = createdMessage.Id }, Request.Scheme);
 
             return new CreatedResult(location, createdMessage);
         }
