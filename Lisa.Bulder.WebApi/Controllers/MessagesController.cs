@@ -6,7 +6,7 @@ namespace Lisa.Bulder.WebApi
     [Route("[controller]")]
     public class MessagesController : Controller
     {
-        //Get all messages
+        //Get a single message from a channel
         [HttpGet("{channel}/{id}", Name = "message")]
         public async Task<IActionResult> Get(string channel, string id)
         {
@@ -14,6 +14,7 @@ namespace Lisa.Bulder.WebApi
             return new HttpOkObjectResult(message);
         }
 
+        //Get all messages from a channel
         [HttpGet("{channel}")]
         public async Task<IActionResult> Get(string channel)
         {

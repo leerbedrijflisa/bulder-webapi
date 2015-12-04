@@ -28,5 +28,29 @@ namespace Lisa.Bulder.WebApi
                     Guid.NewGuid())
             };
         }
+
+        public static object ToChannel(object channelEntity)
+        {
+            var entity = (ChannelEntity) channelEntity;
+            return new
+            {
+                Name = entity.Name,
+                Id = entity.PartitionKey,
+                Administrators = entity.Administrators,
+                Authors = entity.Authors
+            };
+        }
+
+        public static ChannelEntity ToEntity(PostedChannel channel)
+        {
+            return new ChannelEntity
+            {
+                Name = channel.Name,
+                PartitionKey = channel.Name.ToLower(),
+                RowKey = string.Empty,
+                Administrators = channel.Administrators,
+                Authors = channel.Authors
+            };
+        }
     }
 }
