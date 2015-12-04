@@ -46,7 +46,7 @@ namespace Lisa.Bulder.WebApi
             return new ChannelEntity
             {
                 Name = channel.Name,
-                PartitionKey = channel.Name.ToLower(),
+                PartitionKey = channel.Name.ToLower().Replace(" ", "-"),
                 RowKey = string.Empty,
                 Administrators = channel.Administrators,
                 Authors = channel.Authors
