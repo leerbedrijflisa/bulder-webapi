@@ -1,9 +1,8 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Lisa.Bulder.WebApi
 {
-    public class ChannelEntity : TableEntity
+    public class PostedChannel
     {
         [Required]
         public string Administrators { get; set; }

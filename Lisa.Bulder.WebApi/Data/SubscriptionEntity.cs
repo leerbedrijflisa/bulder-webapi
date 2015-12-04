@@ -1,10 +1,12 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
+using System.ComponentModel.DataAnnotations;
 
-namespace Lisa.Bulder.WebApi.Data
+namespace Lisa.Bulder.WebApi
 {
     public class SubscriptionEntity : TableEntity
     {
+        [Required]
+        [EmailAddress]
         public string EmailAddress { get; set; }
-        public string TwitterChannel { get; set; }
     }
 }
