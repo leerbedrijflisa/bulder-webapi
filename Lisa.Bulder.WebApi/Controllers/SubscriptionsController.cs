@@ -35,7 +35,7 @@ namespace Lisa.Bulder.WebApi
                 return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
             }
 
-            var subject = "Channel Subscription";
+            var subject = string.Format("You just subscribed to {0}", channel);
             var body = string.Format("You just subscribed to {0}", channel);
 
             var emailTask = _emailService.Send(subscription.EmailAddress, subject, body);

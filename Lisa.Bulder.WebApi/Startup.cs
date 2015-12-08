@@ -21,7 +21,7 @@ namespace Lisa.Bulder.WebApi
             policy.Headers.Add("*");
             services.AddCors(config => config.AddPolicy("allowAll", policy));
 
-            services.AddInstance<IEmailService>(new SendGridEmailService());
+            services.AddInstance<IEmailService>(new SmtpEmailService());
             services.AddInstance(new Database());
         }
 
