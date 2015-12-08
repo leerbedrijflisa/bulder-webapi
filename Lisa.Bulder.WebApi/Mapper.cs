@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
+using System.Collections.Generic;
 
 namespace Lisa.Bulder.WebApi
 {
@@ -14,6 +16,16 @@ namespace Lisa.Bulder.WebApi
                 Author = entity.Author,
                 Posted = entity.Timestamp
             };
+        }
+
+        public static List<object> ToMessages(TableQuerySegment<MessageEntity> messageEntity)
+        {
+            List<object> messageEntities = new List<object>();
+            foreach (var message in messageEntity)
+            {
+                messageEntities.Add(ToMessage(message));
+            }
+            return messageEntities;
         }
 
         public static MessageEntity ToEntity(string channel, PostedMessage message)

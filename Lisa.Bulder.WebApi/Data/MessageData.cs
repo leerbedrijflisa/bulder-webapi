@@ -17,7 +17,7 @@ namespace Lisa.Bulder.WebApi
         {
             var query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, channel));
             var segment = await _messages.ExecuteQuerySegmentedAsync(query, null);
-            return segment;
+            return Mapper.ToMessages(segment);
         }
 
         public async Task<object> CreateMessage(string channel, PostedMessage message)
