@@ -12,24 +12,26 @@ namespace Lisa.Bulder.WebApi
             _db = database;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        //get a single subscription from a channel.
+        [HttpGet("{channel}/{id}", Name = "subscription")]
+        public async Task<IActionResult> Get(string channel, string id)
         {
-            var subscriptions = await _db.FetchSubscriptions();
+            var subscription = await _db.FetchSubscription(channel, id);
+            return new HttpOkObjectResult(subscription);
+        }
+
+        //get all subscriptions of a single channel
+        [HttpGet("{channel}")]
+        public async Task<IActionResult> Get(string channel)
+        {
+            var subscriptions = await _db.FetchSubscriptions(channel);
             return new ObjectResult(subscriptions);
         }
 
-        [HttpGet("{id}", Name = "subscription")]
-        public IActionResult Get(string id)
-        {
-            return new ObjectResult("");
-        }
-
+        //create a new subscription
         [HttpPost("{channel}")]
-        public async Task<IActionResult> Post([FromBody] SubscriptionEntity subscription, string channel)
+        public async Task<IActionResult> Post([FromBody] PostedSubscription subscription, string channel)
         {
-            subscription.PartitionKey = channel;
-
             if (!ModelState.IsValid)
             {
                 return new BadRequestObjectResult(new { errorMessage = "Invalid json or url" });
@@ -39,11 +41,11 @@ namespace Lisa.Bulder.WebApi
             var body = string.Format("You just subscribed to {0}", channel);
 
             var emailTask = _emailService.Send(subscription.EmailAddress, subject, body);
-            var databaseTask = _db.CreateSubscription(subscription);
+            var databaseTask = _db.CreateSubscription(channel, subscription);
             await Task.WhenAll(emailTask, databaseTask);
-            var createdSubscription = databaseTask.Result;
 
-            string location = Url.RouteUrl("subscription", new { id = createdSubscription.RowKey }, Request.Scheme);
+            dynamic createdSubscription = databaseTask.Result;
+            string location = Url.RouteUrl("subscription", new { id = createdSubscription.EmailAddress }, Request.Scheme);
 
             return new CreatedResult(location, createdSubscription);
         }

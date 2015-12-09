@@ -28,6 +28,37 @@ namespace Lisa.Bulder.WebApi
             return messageEntities;
         }
 
+        public static object ToChannel(object channelEntity)
+        {
+            var entity = (ChannelEntity) channelEntity;
+            return new
+            {
+                Name = entity.Name,
+                Id = entity.PartitionKey,
+                Administrators = entity.Administrators,
+                Authors = entity.Authors
+            };
+        }
+
+        public static object ToSubscription(object subscriptionEntity)
+        {
+            var entity = (SubscriptionEntity) subscriptionEntity;
+            return new
+            {
+                EmailAddress = entity.EmailAddress
+            };
+        }
+
+        public static List<object> ToSubscriptions(TableQuerySegment<SubscriptionEntity> subscriptionEntity)
+        {
+            List<object> subscriptionEntities = new List<object>();
+            foreach (var subscription in subscriptionEntity)
+            {
+                subscriptionEntities.Add(ToSubscription(subscription));
+            }
+            return subscriptionEntities;
+        }
+
         public static MessageEntity ToEntity(string channel, PostedMessage message)
         {
             return new MessageEntity
@@ -41,18 +72,6 @@ namespace Lisa.Bulder.WebApi
             };
         }
 
-        public static object ToChannel(object channelEntity)
-        {
-            var entity = (ChannelEntity) channelEntity;
-            return new
-            {
-                Name = entity.Name,
-                Id = entity.PartitionKey,
-                Administrators = entity.Administrators,
-                Authors = entity.Authors
-            };
-        }
-
         public static ChannelEntity ToEntity(PostedChannel channel)
         {
             return new ChannelEntity
@@ -62,6 +81,17 @@ namespace Lisa.Bulder.WebApi
                 RowKey = string.Empty,
                 Administrators = channel.Administrators,
                 Authors = channel.Authors
+            };
+        }
+
+        public static SubscriptionEntity ToEntity(string channel, PostedSubscription subscription)
+        {
+            return new SubscriptionEntity
+            {
+                EmailAddress = subscription.EmailAddress,
+                PartitionKey = channel.ToLower(),
+                RowKey = Guid.NewGuid().ToString()
+                
             };
         }
     }
