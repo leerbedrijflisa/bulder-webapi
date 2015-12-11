@@ -6,7 +6,17 @@ namespace Lisa.Bulder.WebApi
     [Route("[controller]")]
     public class ChannelsController : Controller
     {
-        //Get all channels
+        //TODO: GET channels/{channel} laad alle berichten uit. Dit moet alleen de berichten van het specifieke kanaal uitladen.
+
+        // get info and messages from the channel
+        [HttpGet("{channel}", Name = "channel")]
+        public async Task<IActionResult> Get(string channel)
+        {
+            var messages = await _db.FetchMessages(channel);
+            return new HttpOkObjectResult(messages);
+        }
+
+        // get all channels
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -14,15 +24,7 @@ namespace Lisa.Bulder.WebApi
             return new HttpOkObjectResult(channels);
         }
         
-        //TODO: GET channels/{channel} laad alle berichten uit. Dit moet alleen de berichten van het specifieke kanaal uitladen.
-        [HttpGet("{id}", Name = "channel")]
-        public async Task<IActionResult> Get(string id)
-        {
-            var channels = await _db.FetchChannels();
-            return new HttpOkObjectResult(channels);
-        }
-
-        //Create a channel
+        // create a channel
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PostedChannel channel)
         {
@@ -32,7 +34,7 @@ namespace Lisa.Bulder.WebApi
             }
 
             dynamic createdChannel = await _db.CreateChannel(channel);
-            string location = Url.RouteUrl("channel", new { id = createdChannel.Id }, Request.Scheme);
+            string location = Url.RouteUrl("channel", new { channel = createdChannel.Id }, Request.Scheme);
 
             return new CreatedResult(location, createdChannel);
         }

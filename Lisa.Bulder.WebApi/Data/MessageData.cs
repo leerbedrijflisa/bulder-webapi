@@ -15,7 +15,7 @@ namespace Lisa.Bulder.WebApi
 
         public async Task<IEnumerable<object>> FetchMessages(string channel)
         {
-            var query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, channel));
+            var query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, channel.ToLower()));
             var segment = await _messages.ExecuteQuerySegmentedAsync(query, null);
             return Mapper.ToMessages(segment);
         }

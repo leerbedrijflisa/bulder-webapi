@@ -34,10 +34,20 @@ namespace Lisa.Bulder.WebApi
             return new
             {
                 Name = entity.Name,
-                Id = entity.PartitionKey,
+                Id = entity.PartitionKey.ToLower(),
                 Administrators = entity.Administrators,
                 Authors = entity.Authors
             };
+        }
+
+        public static List<object> ToChannels(TableQuerySegment<ChannelEntity> channelEntity)
+        {
+            List<object> channelEntities = new List<object>();
+            foreach (var channel in channelEntity)
+            {
+                channelEntities.Add(ToChannel(channel));
+            }
+            return channelEntities;
         }
 
         public static object ToSubscription(object subscriptionEntity)
@@ -65,7 +75,7 @@ namespace Lisa.Bulder.WebApi
             {
                 Text = message.Text,
                 Author = message.Author,
-                PartitionKey = channel,
+                PartitionKey = channel.ToLower(),
                 RowKey = String.Format("{0}{1}",
                     DateTime.MaxValue.Ticks - DateTime.Now.Ticks,
                     Guid.NewGuid())
