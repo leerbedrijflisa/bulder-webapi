@@ -10,7 +10,7 @@ namespace Lisa.Bulder.WebApi
         {
             var query = new TableQuery<ChannelEntity>();
             var segment = await _channels.ExecuteQuerySegmentedAsync(query, null);
-            return segment;
+            return Mapper.ToChannels(segment);
         }
 
         public async Task<object> CreateChannel(PostedChannel channel)

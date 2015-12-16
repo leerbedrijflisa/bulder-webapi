@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
+using System.Collections.Generic;
 
 namespace Lisa.Bulder.WebApi
 {
@@ -6,7 +8,7 @@ namespace Lisa.Bulder.WebApi
     {
         public static object ToMessage(object messageEntity)
         {
-            var entity = (MessageEntity) messageEntity;
+            var entity = (MessageEntity)messageEntity;
             return new
             {
                 Id = entity.RowKey,
@@ -31,7 +33,7 @@ namespace Lisa.Bulder.WebApi
 
         public static object ToChannel(object channelEntity)
         {
-            var entity = (ChannelEntity) channelEntity;
+            var entity = (ChannelEntity)channelEntity;
             return new
             {
                 Name = entity.Name,
@@ -40,6 +42,7 @@ namespace Lisa.Bulder.WebApi
                 Authors = entity.Authors
             };
         }
+
 
         public static ChannelEntity ToEntity(PostedChannel channel)
         {
@@ -51,6 +54,15 @@ namespace Lisa.Bulder.WebApi
                 Administrators = channel.Administrators,
                 Authors = channel.Authors
             };
+        }
+        public static List<object> ToChannels(TableQuerySegment<ChannelEntity> channelEntity)
+        {
+            List<object> channelEntities = new List<object>();
+            foreach (var channel in channelEntity)
+            {
+                channelEntities.Add(ToChannel(channel));
+            }
+            return channelEntities;
         }
     }
 }
